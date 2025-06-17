@@ -13,4 +13,7 @@ __pycache__/
 *.pyc
 
 # Verification scripts
-verify_bossier_output.py 
+verify_bossier_output.py
+
+# macOS system files
+.DS_Store 
