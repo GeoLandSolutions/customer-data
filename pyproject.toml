@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "arcgis-rest-pull"
+name = "arcgis-rest-etl"
 version = "0.1.0"
 description = "Extract ArcGIS REST FeatureServer layers to PostGIS and GeoPackage"
 requires-python = ">=3.8"
@@ -15,4 +15,4 @@ dependencies = [
 ]
 
 [project.scripts]
-arcgis-rest-pull = "arcgis_rest_pull.main:main" 
+arcgis-rest-etl = "arcgis_rest_etl.main:main" 
