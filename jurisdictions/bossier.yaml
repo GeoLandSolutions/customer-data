@@ -1,4 +1,3 @@
-# Example config for Bossier Parish Parcels
 url: "https://bpagis.bossierparish.org/server/rest/services/Parcels/BossierParcels_MarketAssessedLandUseValues_maplex_webmercator/FeatureServer/0"
 primary_key: ["MappingNumber"]
 deduplicate: true
