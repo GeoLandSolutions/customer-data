@@ -1,0 +1,10 @@
+# Example config for Bossier Parish Parcels
+url: "https://bpagis.bossierparish.org/server/rest/services/Parcels/BossierParcels_MarketAssessedLandUseValues_maplex_webmercator/FeatureServer/0"
+primary_key: ["MappingNumber"]
+deduplicate: true
+owners: true
+output:
+  geopackage: "output/final/bossier.gpkg"
+# Feature caching options
+features_cache: "new"
+features_path: "output/intermediate/bossier_features.json"  # where to cache raw features 

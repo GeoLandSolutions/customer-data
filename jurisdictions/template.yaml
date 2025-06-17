@@ -1,0 +1,12 @@
+# ArcGIS REST FeatureServer extraction config template
+url: "https://<host>/.../FeatureServer/0"  # required
+primary_key: ["OBJECTID"]                  # list of fields, default is [OBJECTID]
+deduplicate: false                          # true to deduplicate by primary_key
+owners: false                               # true to extract owners table
+output:
+  geopackage: "output.gpkg"                 # optional: path to GeoPackage
+  postgres:
+    dsn: "host=... dbname=... user=... password=..."  # optional: PostGIS DSN
+# Feature caching options
+features_cache: "new"                       # 'new' to always re-download, 'load' to reuse features_path if present
+features_path: "features.json"              # where to cache raw features 

@@ -1,0 +1,13 @@
+# Output and intermediate files
+output/
+*.gpkg
+*.gpkg-shm
+*.gpkg-wal
+*.json
+
+# Checkpoints
+.checkpoint
+
+# Python cache
+__pycache__/
+*.pyc 
