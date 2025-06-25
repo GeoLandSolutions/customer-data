@@ -3,7 +3,7 @@ primary_key: ["MappingNumber"]
 deduplicate: true
 owners: true
 output:
-  geopackage: "output/final/bossier.gpkg"
+  geopackage: "output/la/bossier/final/bossier.gpkg"
 # Feature caching options
 features_cache: "new"
-features_path: "output/intermediate/bossier_features.json"  # where to cache raw features 
+features_path: "output/la/bossier/intermediate/bossier_features.json"  # where to cache raw features 

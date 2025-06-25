@@ -1,12 +1,84 @@
-# ArcGIS REST FeatureServer extraction config template
-url: "https://<host>/.../FeatureServer/0"  # required
+# Configuration template for customer data extraction
+# Supports both ArcGIS FeatureServer and REST API endpoints
+
+# =============================================================================
+# ArcGIS FeatureServer Configuration (existing format)
+# =============================================================================
+url: "https://<host>/.../FeatureServer/0"  # required for ArcGIS
 primary_key: ["OBJECTID"]                  # list of fields, default is [OBJECTID]
 deduplicate: false                          # true to deduplicate by primary_key
 owners: false                               # true to extract owners table
+
+# =============================================================================
+# REST API Configuration (new format)
+# =============================================================================
+# For REST APIs, you can either:
+# 1. Use a Postman collection JSON file directly
+# 2. Or specify REST API configuration here
+
+# Example REST API configuration:
+# api_type: "rest"
+# base_url: "https://api.example.com/"
+# auth:
+#   type: "bearer"
+#   token: "your_token_here"
+# endpoints:
+#   - name: "Get Sales Data"
+#     method: "GET"
+#     url: "https://api.example.com/sales"
+#     headers: []
+
+# =============================================================================
+# Output Configuration
+# =============================================================================
 output:
-  geopackage: "output.gpkg"                 # optional: path to GeoPackage
+  geopackage: "output/la/bossier/final/bossier.gpkg"  # organized by state/jurisdiction
+  csv: "output/la/bossier/final/bossier.csv"          # for REST APIs
   postgres:
     dsn: "host=... dbname=... user=... password=..."  # optional: PostGIS DSN
-# Feature caching options
+
+# =============================================================================
+# Feature Caching Options
+# =============================================================================
 features_cache: "new"                       # 'new' to always re-download, 'load' to reuse features_path if present
-features_path: "features.json"              # where to cache raw features 
+features_path: "output/la/bossier/intermediate/bossier_features.json"  # organized by state/jurisdiction
+
+# =============================================================================
+# Directory Structure
+# =============================================================================
+# jurisdictions/
+# ├── la/
+# │   └── bossier/
+# │       └── bossier.yaml
+# ├── ok/
+# │   └── tulsa/
+# │       └── tulsa_assessor.json
+# └── template.yaml
+#
+# output/
+# ├── la/
+# │   └── bossier/
+# │       ├── final/
+# │       │   ├── bossier.gpkg
+# │       │   └── bossier.csv
+# │       └── intermediate/
+# │           └── bossier_features.json
+# └── ok/
+#     └── tulsa/
+#         ├── final/
+#         │   ├── tulsa_assessor.gpkg
+#         │   └── tulsa_assessor.csv
+#         └── intermediate/
+#             └── tulsa_assessor_features.json
+
+# =============================================================================
+# Usage Examples:
+# =============================================================================
+# For ArcGIS FeatureServer:
+#   python -m customer_data jurisdictions/la/bossier/bossier.yaml
+#
+# For Postman Collection:
+#   python -m customer_data jurisdictions/ok/tulsa/tulsa_assessor.json
+#
+# For REST API with YAML config:
+#   python -m customer_data jurisdictions/rest_api_config.yaml 

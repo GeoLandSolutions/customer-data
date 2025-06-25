@@ -17,3 +17,8 @@ verify_bossier_output.py
 
 # macOS system files
 .DS_Store 
+
+# Environment variables (contains sensitive tokens)
+.env
+.env.local
+.env.*.local 
