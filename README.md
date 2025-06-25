@@ -1,7 +1,7 @@
-# arcgis-rest-etl
+# customer-data
 
-Extract ArcGIS REST FeatureServer layers to PostGIS and/or GeoPackage.
+Extract data from various county assessor APIs (ArcGIS REST, custom REST APIs, etc.) to PostGIS and/or GeoPackage.
 
 ## Usage
 
-    python -m arcgis_rest_etl <config.yaml> 
+    python -m customer_data <config.yaml> 

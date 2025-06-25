@@ -10,7 +10,7 @@ output/
 
 # Python cache
 __pycache__/
-*.pyc
+*.pyc 
 
 # Verification scripts
 verify_bossier_output.py
