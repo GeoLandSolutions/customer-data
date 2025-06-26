@@ -1,0 +1,8 @@
+
+api_type: "tulsa"
+url: "https://api-assessor.tulsacounty.org/Modeling/GetAllValidSales"
+token: "TULSA_ASSESSOR_TOKEN"
+last_modified: "01-01-2025"
+output:
+  json: "output/tulsa.json"
+  csv: "output/tulsa.csv"

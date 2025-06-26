@@ -29,7 +29,40 @@ def get_total_count(url):
     print(f"Total feature count: {count}")
     return count
 
+def fetch_tulsa_data(url, token, last_modified):
+    """Fetch data from Tulsa County's custom API"""
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json'
+    }
+    
+    params = {
+        'lastModified': last_modified
+    }
+    
+    print(f"Fetching Tulsa data with lastModified: {last_modified}")
+    r = requests.get(url, headers=headers, params=params)
+    r.raise_for_status()
+    return r.json()
+
+def extract_tulsa(cfg, checkpoint_file):
+    """Extract data from Tulsa County's custom API"""
+    url = cfg['url']
+    token = cfg['token']
+    last_modified = cfg.get('last_modified', '01-01-2024')
+    
+    print("Starting Tulsa extraction")
+    data = fetch_tulsa_data(url, token, last_modified)
+    
+    print(f"Fetched {len(data)} records from Tulsa API")
+    
+    return data
+
 def extract_all(cfg, checkpoint_file):
+    if cfg.get('api_type') == 'tulsa':
+        return extract_tulsa(cfg, checkpoint_file)
+    
+    # for arcgis extraction
     meta = fetch_metadata(cfg['url'])
     sr = meta['extent']['spatialReference'].get('wkid', 4326)
     out_sr = 4326 if sr != 4326 else sr

@@ -17,3 +17,9 @@ verify_bossier_output.py
 
 # macOS system files
 .DS_Store 
+
+# venv
+.venv/
+
+# env
+.env
