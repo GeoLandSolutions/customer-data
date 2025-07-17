@@ -41,8 +41,17 @@ def fetch_tulsa_data(url, token, last_modified):
     }
     
     print(f"Fetching Tulsa data with lastModified: {last_modified}")
+    print(f"URL: {url}")
+    print(f"Headers: {headers}")
+    print(f"Params: {params}")
+    
     r = requests.get(url, headers=headers, params=params)
-    r.raise_for_status()
+    
+    if not r.ok:
+        print(f"API Error: {r.status_code} {r.reason}")
+        print(f"Response text: {r.text}")
+        r.raise_for_status()
+    
     return r.json()
 
 def extract_tulsa(cfg, checkpoint_file):
@@ -50,6 +59,16 @@ def extract_tulsa(cfg, checkpoint_file):
     url = cfg['url']
     token = cfg['token']
     last_modified = cfg.get('last_modified', '01-01-2024')
+    
+    # Check if token is an environment variable name
+    import os
+    if token.startswith('TULSA_ASSESSOR_TOKEN'):
+        actual_token = os.getenv(token)
+        if actual_token:
+            token = actual_token
+            print(f"Using token from environment variable: {token[:10]}...")
+        else:
+            print(f"Warning: Environment variable {token} not found. Using placeholder token.")
     
     print("Starting Tulsa extraction")
     data = fetch_tulsa_data(url, token, last_modified)

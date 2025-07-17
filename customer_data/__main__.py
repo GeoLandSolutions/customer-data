@@ -18,7 +18,7 @@ def handle_tulsa(cfg, last_modified_override=None, data_type=None):
         cfg['last_modified'] = last_modified_override
         print(f"Using last_modified override: {last_modified_override}")
     
-    # Set the appropriate URL based on data type selection
+    # set the URL based on data type selection
     if data_type == "all" and 'url_all' in cfg:
         cfg['url'] = cfg['url_all']
         print("Using 'all' data URL")
