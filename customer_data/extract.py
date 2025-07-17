@@ -1,3 +1,4 @@
+import os
 import requests
 from .checkpoint import save_checkpoint, load_checkpoint
 
@@ -60,8 +61,12 @@ def extract_tulsa(cfg, checkpoint_file):
     token = cfg['token']
     last_modified = cfg.get('last_modified', '01-01-2024')
     
-    # Check if token is an environment variable name
-    import os
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()  
+    except ImportError:
+        print("Warning: python-dotenv not installed. Install with: pip install python-dotenv")
+    
     if token.startswith('TULSA_ASSESSOR_TOKEN'):
         actual_token = os.getenv(token)
         if actual_token:
