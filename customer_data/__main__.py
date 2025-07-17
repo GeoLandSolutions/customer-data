@@ -18,14 +18,17 @@ def handle_tulsa(cfg, last_modified_override=None, data_type=None):
         cfg['last_modified'] = last_modified_override
         print(f"Using last_modified override: {last_modified_override}")
     
-    # set the URL based on data type selection
+    # Set the appropriate URL based on data type selection
     if data_type == "all" and 'url_all' in cfg:
         cfg['url'] = cfg['url_all']
         print("Using 'all' data URL")
+        print(f"URL: {cfg['url']}")
     elif data_type == "sales" or data_type is None:
         print("Using 'sales' data URL")
+        print(f"URL: {cfg['url']}")
     else:
         print(f"Invalid data_type: {data_type}. Using 'sales' data URL")
+        print(f"URL: {cfg['url']}")
     
     data = extract_tulsa(cfg, '.checkpoint')
     out = cfg['output']
