@@ -4,9 +4,6 @@ import json
 import csv
 from .config import load_config
 from .extract import extract_all, extract_tulsa
-from .transform import features_to_gdf, deduplicate_gdf, extract_owners
-from .load import write_geopackage, write_postgis
-import pandas as pd
 
 def ensure_dir_exists(file_path):
     dir_path = os.path.dirname(file_path)
@@ -14,12 +11,22 @@ def ensure_dir_exists(file_path):
         os.makedirs(dir_path, exist_ok=True)
         print(f"Created directory: {dir_path}")
 
-def handle_tulsa(cfg, last_modified_override=None):
+def handle_tulsa(cfg, last_modified_override=None, data_type=None):
     """Handle Tulsa data extraction and output directly"""
     print("Starting Tulsa extraction")
     if last_modified_override:
         cfg['last_modified'] = last_modified_override
         print(f"Using last_modified override: {last_modified_override}")
+    
+    # set the URL based on data type selection
+    if data_type == "all" and 'url_all' in cfg:
+        cfg['url'] = cfg['url_all']
+        print("Using 'all' data URL")
+    elif data_type == "sales" or data_type is None:
+        print("Using 'sales' data URL")
+    else:
+        print(f"Invalid data_type: {data_type}. Using 'sales' data URL")
+    
     data = extract_tulsa(cfg, '.checkpoint')
     out = cfg['output']
     
@@ -46,20 +53,12 @@ def handle_tulsa(cfg, last_modified_override=None):
             writer.writeheader()
             writer.writerows(data)
 
-def main():
-    print("Starting main")
-    if len(sys.argv) < 2 or len(sys.argv) > 3:
-        print("Usage: python -m customer_data <config.yaml> [last_modified_date]")
-        print("  last_modified_date: Optional date for Tulsa API (MM-DD-YYYY format)")
-        sys.exit(1)
-    
-    cfg = load_config(sys.argv[1])
-    last_modified_override = sys.argv[2] if len(sys.argv) == 3 else None
-    
-    if cfg.get('api_type') == 'tulsa':
-        handle_tulsa(cfg, last_modified_override)
-        print("Done")
-        sys.exit(0)
+def handle_arcgis(cfg):
+    """Handle ArcGIS data extraction and processing"""
+    # Import geopandas-dependent modules only when needed
+    from .transform import features_to_gdf, deduplicate_gdf, extract_owners
+    from .load import write_geopackage, write_postgis
+    import pandas as pd
     
     cache_mode = cfg.get('features_cache', 'new')
     features_path = cfg.get('features_path', 'features.json')
@@ -88,8 +87,36 @@ def main():
     if out.get('postgres', {}).get('dsn'):
         print("Writing PostGIS")
         write_postgis(gdf, owners, out['postgres']['dsn'])
-    print("Done")
-    sys.exit(0)
+
+def main():
+    print("Starting main")
+    if len(sys.argv) < 2 or len(sys.argv) > 4:
+        print("Usage: python -m customer_data <config.yaml> [data_type] [last_modified_date]")
+        print("  data_type: Optional - 'sales' or 'all' for Tulsa API (default: 'sales')")
+        print("  last_modified_date: Optional date for Tulsa API (MM-DD-YYYY format)")
+        sys.exit(1)
+    
+    cfg = load_config(sys.argv[1])
+    data_type = None
+    last_modified_override = None
+    
+    if len(sys.argv) >= 3:
+        # check if the second arg is a data_type or last_modified_date
+        arg2 = sys.argv[2]
+        if arg2 in ['sales', 'all']:
+            data_type = arg2
+            last_modified_override = sys.argv[3] if len(sys.argv) == 4 else None
+        else:
+            last_modified_override = arg2
+    
+    if cfg.get('api_type') == 'tulsa':
+        handle_tulsa(cfg, last_modified_override, data_type)
+        print("Done")
+        sys.exit(0)
+    else:
+        handle_arcgis(cfg)
+        print("Done")
+        sys.exit(0)
 
 if __name__ == "__main__":
     main() 

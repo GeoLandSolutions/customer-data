@@ -15,4 +15,4 @@ dependencies = [
 ]
 
 [project.scripts]
-customer-data = "customer_data.main:main" 
+customer-data = "customer_data.__main__:main" 
