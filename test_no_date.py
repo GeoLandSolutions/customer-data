@@ -68,7 +68,7 @@ def main():
     # Test both endpoints without date
     endpoints = [
         "https://api-assessor.tulsacounty.org/Modeling/GetAllValidSales",
-        "https://api-assessor.tulsacounty.org/Modeling/GetAllLandLotParcelCharacteristics"
+        "https://api-assessor.tulsacounty.org/GetAllLandLotParcelCharacteristics"
     ]
     
     for endpoint in endpoints:
