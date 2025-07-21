@@ -40,7 +40,7 @@ def fetch_tulsa_data(url, token, last_modified=None):
     }
     
     params = {}
-    if last_modified is not None:
+    if last_modified:
         params['lastModified'] = last_modified
     
     print(f"Fetching Tulsa data with lastModified: {last_modified}")
@@ -61,12 +61,13 @@ def extract_tulsa(cfg, checkpoint_file):
     """Extract data from Tulsa County's custom API"""
     url = cfg['url']
     token = cfg['token']
-    # Only require last_modified if not values type
     data_type = cfg.get('data_type')
-    if data_type == 'values':
+    last_modified = cfg.get('last_modified', '01-01-2024')
+    # If last_modified is None or empty string, do not use it
+    if last_modified is not None and str(last_modified).strip() == '':
         last_modified = None
-    else:
-        last_modified = cfg.get('last_modified', '01-01-2024')
+    if data_type == 'values' and 'last_modified' not in cfg:
+        last_modified = None
     
     try:
         from dotenv import load_dotenv

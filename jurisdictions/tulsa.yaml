@@ -6,7 +6,7 @@ url: "https://api-assessor.tulsacounty.org/Modeling/GetAllValidSales"
 url_all: "https://api-assessor.tulsacounty.org/Modeling/GetAllLandLotParcelCharacteristics"
 url_values: "https://api-assessor.tulsacounty.org/Modeling/GetAllActualAndAssessedValues"
 token: "TULSA_ASSESSOR_TOKEN"
-lastModified: "01-01-2025"
-output:
+lastModified: ""
+output:s
   json: "output/tulsa.json"
   csv: "output/tulsa.csv"
