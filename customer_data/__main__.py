@@ -14,6 +14,8 @@ def ensure_dir_exists(file_path):
 def handle_tulsa(cfg, last_modified_override=None, data_type=None):
     """Handle Tulsa data extraction and output directly"""
     print("Starting Tulsa extraction")
+    if data_type:
+        cfg['data_type'] = data_type
     if last_modified_override:
         cfg['last_modified'] = last_modified_override
         print(f"Using last_modified override: {last_modified_override}")

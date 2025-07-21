@@ -32,16 +32,16 @@ def get_total_count(url):
     print(f"Total feature count: {count}")
     return count
 
-def fetch_tulsa_data(url, token, last_modified):
+def fetch_tulsa_data(url, token, last_modified=None):
     """Fetch data from Tulsa County's custom API"""
     headers = {
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json'
     }
     
-    params = {
-        'lastModified': last_modified
-    }
+    params = {}
+    if last_modified is not None:
+        params['lastModified'] = last_modified
     
     print(f"Fetching Tulsa data with lastModified: {last_modified}")
     print(f"URL: {url}")
@@ -61,9 +61,15 @@ def extract_tulsa(cfg, checkpoint_file):
     """Extract data from Tulsa County's custom API"""
     url = cfg['url']
     token = cfg['token']
-    last_modified = cfg.get('last_modified', '01-01-2024')
+    # Only require last_modified if not values type
+    data_type = cfg.get('data_type')
+    if data_type == 'values':
+        last_modified = None
+    else:
+        last_modified = cfg.get('last_modified', '01-01-2024')
     
     try:
+        from dotenv import load_dotenv
         load_dotenv()  
     except ImportError:
         print("Warning: python-dotenv not installed. Install with: pip install python-dotenv")
