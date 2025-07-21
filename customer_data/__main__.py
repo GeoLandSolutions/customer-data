@@ -23,6 +23,10 @@ def handle_tulsa(cfg, last_modified_override=None, data_type=None):
         cfg['url'] = cfg['url_all']
         print("Using 'all' data URL")
         print(f"URL: {cfg['url']}")
+    elif data_type == "values" and 'url_values' in cfg:
+        cfg['url'] = cfg['url_values']
+        print("Using 'values' data URL")
+        print(f"URL: {cfg['url']}")
     elif data_type == "sales" or data_type is None:
         print("Using 'sales' data URL")
         print(f"URL: {cfg['url']}")
@@ -95,7 +99,7 @@ def main():
     print("Starting main")
     if len(sys.argv) < 2 or len(sys.argv) > 4:
         print("Usage: python -m customer_data <config.yaml> [data_type] [last_modified_date]")
-        print("  data_type: Optional - 'sales' or 'all' for Tulsa API (default: 'sales')")
+        print("  data_type: Optional - 'sales', 'all', or 'values' for Tulsa API (default: 'sales')")
         print("  last_modified_date: Optional date for Tulsa API (MM-DD-YYYY format)")
         sys.exit(1)
     
@@ -106,7 +110,7 @@ def main():
     if len(sys.argv) >= 3:
         # check if the second arg is a data_type or last_modified_date
         arg2 = sys.argv[2]
-        if arg2 in ['sales', 'all']:
+        if arg2 in ['sales', 'all', 'values']:
             data_type = arg2
             last_modified_override = sys.argv[3] if len(sys.argv) == 4 else None
         else:

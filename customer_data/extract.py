@@ -1,6 +1,8 @@
 import os
 import requests
+from dotenv import load_dotenv
 from .checkpoint import save_checkpoint, load_checkpoint
+
 
 def fetch_metadata(url):
     r = requests.get(f'{url}?f=pjson')
@@ -62,7 +64,6 @@ def extract_tulsa(cfg, checkpoint_file):
     last_modified = cfg.get('last_modified', '01-01-2024')
     
     try:
-        from dotenv import load_dotenv
         load_dotenv()  
     except ImportError:
         print("Warning: python-dotenv not installed. Install with: pip install python-dotenv")

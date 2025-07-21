@@ -4,6 +4,7 @@ api_type: "tulsa"
 url: "https://api-assessor.tulsacounty.org/Modeling/GetAllValidSales"
 # if user selects all, use this url
 url_all: "https://api-assessor.tulsacounty.org/Modeling/GetAllLandLotParcelCharacteristics"
+url_values: "https://api-assessor.tulsacounty.org/Modeling/GetAllActualAndAssessedValues"
 token: "TULSA_ASSESSOR_TOKEN"
 lastModified: "01-01-2025"
 output:
