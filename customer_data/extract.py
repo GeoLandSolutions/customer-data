@@ -62,10 +62,10 @@ def extract_tulsa(cfg, checkpoint_file):
     url = cfg['url']
     token = cfg['token']
     data_type = cfg.get('data_type')
-    last_modified = cfg.get('last_modified', '01-01-2024')
-    # If last_modified is None or empty string, do not use it
-    if last_modified is not None and str(last_modified).strip() == '':
-        last_modified = None
+    if 'last_modified' in cfg:
+        last_modified = cfg['last_modified']
+    else:
+        last_modified = '01-01-2024'
     if data_type == 'values' and 'last_modified' not in cfg:
         last_modified = None
     
