@@ -65,7 +65,7 @@ def extract_tulsa(cfg, checkpoint_file):
     if 'last_modified' in cfg:
         last_modified = cfg['last_modified']
     else:
-        last_modified = '01-01-2024'
+        last_modified = None
     if data_type == 'values' and 'last_modified' not in cfg:
         last_modified = None
     
