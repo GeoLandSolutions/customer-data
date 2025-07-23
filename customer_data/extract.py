@@ -3,7 +3,7 @@ import requests
 from dotenv import load_dotenv
 from .checkpoint import save_checkpoint, load_checkpoint
 import json
-from customer_data.etl.bossier import BossierETL
+from customer_data.etl.bossier_la import BossierETL
 from customer_data.etl.wayne_ky import WayneKYETL
 from customer_data.etl.tulsa_ok import TulsaOKETL
 from customer_data.etl.base import BaseJurisdictionETL

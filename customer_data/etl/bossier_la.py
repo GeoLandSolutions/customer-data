@@ -2,6 +2,8 @@ import os
 import requests
 from customer_data.etl.base import BaseJurisdictionETL
 from customer_data.checkpoint import save_checkpoint, load_checkpoint
+from customer_data.utils import ensure_dir_exists
+import json
 
 class BossierETL(BaseJurisdictionETL):
     def extract(self, checkpoint_file=None):
@@ -38,11 +40,11 @@ class BossierETL(BaseJurisdictionETL):
         os.makedirs(base_dir, exist_ok=True)
         meta_path = os.path.join(base_dir, "bossier_meta.json")
         features_path = os.path.join(base_dir, "bossier_features.json")
+        ensure_dir_exists(meta_path)
+        ensure_dir_exists(features_path)
         with open(meta_path, "w") as f:
-            import json
             json.dump(meta, f, indent=2)
         with open(features_path, "w") as f:
-            import json
             json.dump(features, f, indent=2)
         print(f"Saved meta to {meta_path}")
         print(f"Saved features to {features_path}")
