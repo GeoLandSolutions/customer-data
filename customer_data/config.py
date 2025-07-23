@@ -4,7 +4,8 @@ import yaml
 def load_config(path):
     with open(path) as f:
         cfg = yaml.safe_load(f)
-    if 'url' not in cfg:
+    api_type = cfg.get('api_type', None)
+    if api_type not in ['wayne_ky', 'tulsa'] and 'url' not in cfg:
         sys.exit(1)
     if 'primary_key' not in cfg:
         cfg['primary_key'] = ['OBJECTID']

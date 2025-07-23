@@ -1,0 +1,6 @@
+name: Wayne, KY
+api_base_url: "https://kycowayne.pvdconnect.com/pvdnetapi/v1"
+username_env: "WAYNE_KY_API_USER"
+password_env: "WAYNE_KY_API_KEY"
+api_type: wayne_ky
+extract_all_tables: true

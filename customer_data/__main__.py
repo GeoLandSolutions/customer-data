@@ -97,35 +97,71 @@ def handle_arcgis(cfg):
         print("Writing PostGIS")
         write_postgis(gdf, owners, out['postgres']['dsn'])
 
+def handle_wayne_ky(cfg):
+    """Handle Wayne, KY data extraction and output"""
+    from .extract import extract_wayne_ky
+    print("Starting Wayne, KY extraction")
+    data = extract_wayne_ky(cfg, '.checkpoint')
+    out = cfg.get('output', {})
+    # JSON
+    if out.get('json'):
+        json_path = out['json']
+        ensure_dir_exists(json_path)
+        print(f"Writing JSON to {json_path}")
+        with open(json_path, 'w') as f:
+            json.dump(data, f, indent=2)
+    # CSV (if data is a list of dicts)
+    if out.get('csv') and isinstance(data, list) and data:
+        csv_path = out['csv']
+        ensure_dir_exists(csv_path)
+        print(f"Writing CSV to {csv_path}")
+        all_keys = set()
+        for record in data:
+            all_keys.update(record.keys())
+        with open(csv_path, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=sorted(all_keys))
+            writer.writeheader()
+            writer.writerows(data)
+
 def main():
     print("Starting main")
+    try:
+        print(f"sys.argv: {sys.argv}")
     if len(sys.argv) < 2 or len(sys.argv) > 4:
         print("Usage: python -m customer_data <config.yaml> [data_type] [last_modified_date]")
         print("  data_type: Optional - 'sales', 'all', or 'values' for Tulsa API (default: 'sales')")
         print("  last_modified_date: Optional date for Tulsa API (MM-DD-YYYY format)")
         sys.exit(1)
-    
+        print("Loading config...")
     cfg = load_config(sys.argv[1])
+        print(f"Loaded config: {cfg}")
     data_type = None
     last_modified_override = None
-    
     if len(sys.argv) >= 3:
-        # check if the second arg is a data_type or last_modified_date
         arg2 = sys.argv[2]
         if arg2 in ['sales', 'all', 'values']:
             data_type = arg2
             last_modified_override = sys.argv[3] if len(sys.argv) == 4 else None
         else:
             last_modified_override = arg2
-    
+        print(f"api_type: {cfg.get('api_type')}")
     if cfg.get('api_type') == 'tulsa':
         handle_tulsa(cfg, last_modified_override, data_type)
         print("Done")
         sys.exit(0)
+        elif cfg.get('api_type') == 'wayne_ky':
+            handle_wayne_ky(cfg)
+            print("Done")
+            sys.exit(0)
     else:
         handle_arcgis(cfg)
         print("Done")
         sys.exit(0)
+    except Exception as e:
+        print(f"Exception occurred: {e}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
 
 if __name__ == "__main__":
     main() 
