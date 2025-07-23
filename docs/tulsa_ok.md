@@ -16,7 +16,7 @@ Extracts property sales, parcel characteristics, and assessed values from the Tu
 ---
 
 ## Configuration
-Edit `jurisdictions/tulsa.yaml`:
+Edit `jurisdictions/tulsa_ok.yaml`:
 ```yaml
 name: Tulsa, OK
 api_type: tulsa
@@ -44,7 +44,7 @@ owners: false
 You can specify the data type and date as command-line arguments:
 
 ```sh
-python -m customer_data jurisdictions/tulsa.yaml [data_type] [MM-DD-YYYY]
+python -m customer_data jurisdictions/tulsa_ok.yaml [data_type] [MM-DD-YYYY]
 ```
 
 ### Supported Data Types
@@ -55,22 +55,22 @@ python -m customer_data jurisdictions/tulsa.yaml [data_type] [MM-DD-YYYY]
 ### Examples
 ```sh
 # Extract sales data with default date
-python -m customer_data jurisdictions/tulsa.yaml
+python -m customer_data jurisdictions/tulsa_ok.yaml
 
 # Extract sales data with specific date
-python -m customer_data jurisdictions/tulsa.yaml sales 01-01-2024
+python -m customer_data jurisdictions/tulsa_ok.yaml sales 01-01-2024
 
 # Extract all data with specific date
-python -m customer_data jurisdictions/tulsa.yaml all 06-10-2025
+python -m customer_data jurisdictions/tulsa_ok.yaml all 06-10-2025
 
 # Extract all data with default date
-python -m customer_data jurisdictions/tulsa.yaml all
+python -m customer_data jurisdictions/tulsa_ok.yaml all
 
 # Extract all actual and assessed values with default date
-python -m customer_data jurisdictions/tulsa.yaml values
+python -m customer_data jurisdictions/tulsa_ok.yaml values
 
 # Extract all actual and assessed values with specific date
-python -m customer_data jurisdictions/tulsa.yaml values 06-10-2025
+python -m customer_data jurisdictions/tulsa_ok.yaml values 06-10-2025
 ```
 
 > **Note:** If no date is provided, the script uses the date specified in the configuration file, which is set to `01-01-2025` by default.

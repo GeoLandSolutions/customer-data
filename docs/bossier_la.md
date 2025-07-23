@@ -12,7 +12,7 @@ Extracts parcel and assessment data from the Bossier Parish, LA ArcGIS REST API.
 ---
 
 ## Configuration
-Edit `jurisdictions/bossier.yaml`:
+Edit `jurisdictions/bossier_la.yaml`:
 ```yaml
 name: Bossier, LA
 url: "https://bpagis.bossierparish.org/server/rest/services/Parcels/BossierParcels_MarketAssessedLandUseValues_maplex_webmercator/FeatureServer/0"
@@ -32,7 +32,7 @@ features_path: output/intermediate/bossier_features.json
 
 ## How to Run
 ```sh
-python -m customer_data jurisdictions/bossier.yaml
+python -m customer_data jurisdictions/bossier_la.yaml
 ```
 
 ---
