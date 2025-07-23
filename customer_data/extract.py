@@ -3,6 +3,10 @@ import requests
 from dotenv import load_dotenv
 from .checkpoint import save_checkpoint, load_checkpoint
 import json
+from customer_data.etl.bossier import BossierETL
+from customer_data.etl.wayne_ky import WayneKYETL
+from customer_data.etl.tulsa_ok import TulsaOKETL
+from customer_data.etl.base import BaseJurisdictionETL
 
 
 def fetch_metadata(url):
@@ -173,80 +177,17 @@ def extract_all_adhoc_tables(cfg, api_base_url, token, tables_json_path, output_
         except Exception as e:
             print(f"Failed to extract table {table_name}: {e}")
 
-def extract_wayne_ky(cfg, checkpoint_file):
-    """Authenticate to Wayne, KY PVDNet API, print the access token and resource groups, fetch Adhoc tables, run a sample Adhoc query, and optionally extract all tables."""
-    load_dotenv()
-    api_base_url = cfg['api_base_url']
-    username = os.getenv(cfg['username_env'])
-    password = os.getenv(cfg['password_env'])
-    if not username or not password:
-        raise ValueError(f"Missing credentials: username={username}, password={'set' if password else 'unset'}")
-    auth_url = f"{api_base_url}/authenticate"
-    payload = {"username": username, "password": password}
-    headers = {"Content-Type": "application/json"}
-    print(f"Authenticating to PVDNet API at {auth_url}...")
-    r = requests.post(auth_url, json=payload, headers=headers)
-    try:
-        data = json.loads(r.content.decode("utf-8-sig"))
-        token = data.get("token")
-        resource_groups = data.get("resourceGroups")
-    except Exception as e:
-        print(f"Failed to decode JSON from response. Status: {r.status_code}")
-        print(f"Response text: {r.text}")
-        raise
-    print("\n================ ACCESS TOKEN ================" )
-    print(token)
-    print("============================================\n")
-    print("Resource Groups:")
-    print(resource_groups)
-    print("\nCopy this token and use it in the Swagger UI to explore endpoints.")
-    # Set new output directory structure
-    base_dir = os.path.join("output", "ky", "wayne")
-    os.makedirs(base_dir, exist_ok=True)
-    tables_output = os.path.join(base_dir, "wayne_ky_adhoc_tables.json")
-    tables = fetch_adhoc_tables(api_base_url, token, tables_output)
-    # Run a sample Adhoc query if a query is provided in config
-    adhoc_query = cfg.get('adhoc_query')
-    if adhoc_query:
-        query_output = os.path.join(base_dir, "wayne_ky_adhoc_query.json")
-        run_adhoc_query(api_base_url, token, adhoc_query, query_output)
-    # Extract all tables if requested
-    if cfg.get('extract_all_tables'):
-        output_dir = os.path.join(base_dir, "all_tables")
-        extract_all_adhoc_tables(cfg, api_base_url, token, tables_output, output_dir)
-    return {"token": token, "resourceGroups": resource_groups, "tables": tables}
+def get_etl_class(api_type):
+    if api_type == 'wayne_ky':
+        return WayneKYETL
+    if api_type == 'tulsa':
+        return TulsaOKETL
+    if api_type == 'bossier':
+        return BossierETL
+    raise ValueError(f"Unsupported api_type: {api_type}")
 
 def extract_all(cfg, checkpoint_file):
-    if cfg.get('api_type') == 'wayne_ky':
-        return extract_wayne_ky(cfg, checkpoint_file)
-    if cfg.get('api_type') == 'tulsa':
-        return extract_tulsa(cfg, checkpoint_file)
-    
-    # for arcgis extraction
-    meta = fetch_metadata(cfg['url'])
-    sr = meta['extent']['spatialReference'].get('wkid', 4326)
-    out_sr = 4326 if sr != 4326 else sr
-    fields = [f['name'] for f in meta['fields']]
-    page_size = meta.get('maxRecordCount', 1000)
-    offset = load_checkpoint(checkpoint_file)
-    features = []
-    total = get_total_count(cfg['url'])
-    print(f"Starting extraction at offset {offset}")
-    while True:
-        data = fetch_features(cfg['url'], fields, offset, page_size, out_sr)
-        fs = data.get('features', [])
-        print(f"Fetched {len(fs)} features at offset {offset}")
-        if not fs:
-            print("No more features returned, stopping.")
-            break
-        features.extend(fs)
-        offset += len(fs)
-        save_checkpoint(checkpoint_file, offset)
-        if len(fs) < page_size:
-            print("Last page fetched (less than page_size), stopping.")
-            break
-        if total is not None and offset >= total:
-            print("Fetched all features (offset >= total), stopping.")
-            break
-    print(f"Extraction complete. Total features fetched: {len(features)}")
-    return meta, features 
+    api_type = cfg.get('api_type')
+    etl_cls = get_etl_class(api_type)
+    etl = etl_cls(cfg)
+    return etl.extract(checkpoint_file) 

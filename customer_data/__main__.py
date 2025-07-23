@@ -127,34 +127,27 @@ def main():
     print("Starting main")
     try:
         print(f"sys.argv: {sys.argv}")
-    if len(sys.argv) < 2 or len(sys.argv) > 4:
-        print("Usage: python -m customer_data <config.yaml> [data_type] [last_modified_date]")
-        print("  data_type: Optional - 'sales', 'all', or 'values' for Tulsa API (default: 'sales')")
-        print("  last_modified_date: Optional date for Tulsa API (MM-DD-YYYY format)")
-        sys.exit(1)
+        if len(sys.argv) < 2 or len(sys.argv) > 4:
+            print("Usage: python -m customer_data <config.yaml> [data_type] [last_modified_date]")
+            print("  data_type: Optional - 'sales', 'all', or 'values' for Tulsa API (default: 'sales')")
+            print("  last_modified_date: Optional date for Tulsa API (MM-DD-YYYY format)")
+            sys.exit(1)
         print("Loading config...")
-    cfg = load_config(sys.argv[1])
+        cfg = load_config(sys.argv[1])
         print(f"Loaded config: {cfg}")
-    data_type = None
-    last_modified_override = None
-    if len(sys.argv) >= 3:
-        arg2 = sys.argv[2]
-        if arg2 in ['sales', 'all', 'values']:
-            data_type = arg2
-            last_modified_override = sys.argv[3] if len(sys.argv) == 4 else None
-        else:
-            last_modified_override = arg2
+        # Optionally handle data_type and last_modified_override for Tulsa
+        data_type = None
+        last_modified_override = None
+        if len(sys.argv) >= 3:
+            arg2 = sys.argv[2]
+            if arg2 in ['sales', 'all', 'values']:
+                data_type = arg2
+                last_modified_override = sys.argv[3] if len(sys.argv) == 4 else None
+            else:
+                last_modified_override = arg2
         print(f"api_type: {cfg.get('api_type')}")
-    if cfg.get('api_type') == 'tulsa':
-        handle_tulsa(cfg, last_modified_override, data_type)
-        print("Done")
-        sys.exit(0)
-        elif cfg.get('api_type') == 'wayne_ky':
-            handle_wayne_ky(cfg)
-            print("Done")
-            sys.exit(0)
-    else:
-        handle_arcgis(cfg)
+        from .extract import extract_all
+        extract_all(cfg, '.checkpoint')
         print("Done")
         sys.exit(0)
     except Exception as e:
